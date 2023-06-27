@@ -1,0 +1,24 @@
+import pandas as pd
+from sklearn.metrics.pairwise import cosine_similarity
+
+# Load the user-item ratings matrix
+ratings = pd.read_csv('ratings.csv')
+
+# Compute item-item similarity matrix using cosine similarity
+item_similarity = cosine_similarity(ratings.T)
+
+# Generate recommendations for a user
+user_id = 1
+user_ratings = ratings.iloc[user_id]
+
+# Calculate weighted average of item ratings based on similarity
+weighted_ratings = item_similarity.dot(user_ratings)
+
+# Filter out items already rated by the user
+unrated_items = weighted_ratings[user_ratings.isnull()]
+
+# Sort recommendations in descending order
+recommendations = unrated_items.sort_values(ascending=False)
+
+print("Top recommendations for user", user_id)
+print(recommendations.head())
